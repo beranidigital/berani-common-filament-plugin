@@ -1,8 +1,9 @@
 <?php
 
-namespace VendorName\Skeleton;
+namespace BeraniDigitalID\BeraniCommonFilamentPlugin;
 
-use Filament\Support\Assets\AlpineComponent;
+use BeraniDigitalID\BeraniCommonFilamentPlugin\Commands\BeraniCommonFilamentPluginCommand;
+use BeraniDigitalID\BeraniCommonFilamentPlugin\Testing\TestsBeraniCommonFilamentPlugin;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
@@ -13,14 +14,12 @@ use Livewire\Features\SupportTesting\Testable;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use VendorName\Skeleton\Commands\SkeletonCommand;
-use VendorName\Skeleton\Testing\TestsSkeleton;
 
-class SkeletonServiceProvider extends PackageServiceProvider
+class BeraniCommonFilamentPluginServiceProvider extends PackageServiceProvider
 {
-    public static string $name = 'skeleton';
+    public static string $name = 'berani-common-filament-plugin';
 
-    public static string $viewNamespace = 'skeleton';
+    public static string $viewNamespace = 'berani-common-filament-plugin';
 
     public function configurePackage(Package $package): void
     {
@@ -36,7 +35,7 @@ class SkeletonServiceProvider extends PackageServiceProvider
                     ->publishConfigFile()
                     ->publishMigrations()
                     ->askToRunMigrations()
-                    ->askToStarRepoOnGitHub(':vendor_slug/:package_slug');
+                    ->askToStarRepoOnGitHub('beranidigital/berani-common-filament-plugin');
             });
 
         $configFileName = $package->shortName();
@@ -56,6 +55,26 @@ class SkeletonServiceProvider extends PackageServiceProvider
         if (file_exists($package->basePath('/../resources/views'))) {
             $package->hasViews(static::$viewNamespace);
         }
+    }
+
+    /**
+     * @return array<class-string>
+     */
+    protected function getCommands(): array
+    {
+        return [
+            BeraniCommonFilamentPluginCommand::class,
+        ];
+    }
+
+    /**
+     * @return array<string>
+     */
+    protected function getMigrations(): array
+    {
+        return [
+            'create_berani-common-filament-plugin_table',
+        ];
     }
 
     public function packageRegistered(): void
@@ -82,18 +101,13 @@ class SkeletonServiceProvider extends PackageServiceProvider
         if (app()->runningInConsole()) {
             foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
                 $this->publishes([
-                    $file->getRealPath() => base_path("stubs/skeleton/{$file->getFilename()}"),
-                ], 'skeleton-stubs');
+                    $file->getRealPath() => base_path("stubs/berani-common-filament-plugin/{$file->getFilename()}"),
+                ], 'berani-common-filament-plugin-stubs');
             }
         }
 
         // Testing
-        Testable::mixin(new TestsSkeleton());
-    }
-
-    protected function getAssetPackageName(): ?string
-    {
-        return ':vendor_slug/:package_slug';
+        Testable::mixin(new TestsBeraniCommonFilamentPlugin());
     }
 
     /**
@@ -102,20 +116,23 @@ class SkeletonServiceProvider extends PackageServiceProvider
     protected function getAssets(): array
     {
         return [
-            // AlpineComponent::make('skeleton', __DIR__ . '/../resources/dist/components/skeleton.js'),
-            Css::make('skeleton-styles', __DIR__ . '/../resources/dist/skeleton.css'),
-            Js::make('skeleton-scripts', __DIR__ . '/../resources/dist/skeleton.js'),
+            // AlpineComponent::make('berani-common-filament-plugin', __DIR__ . '/../resources/dist/components/berani-common-filament-plugin.js'),
+            Css::make('berani-common-filament-plugin-styles', __DIR__ . '/../resources/dist/berani-common-filament-plugin.css'),
+            Js::make('berani-common-filament-plugin-scripts', __DIR__ . '/../resources/dist/berani-common-filament-plugin.js'),
         ];
     }
 
-    /**
-     * @return array<class-string>
-     */
-    protected function getCommands(): array
+    protected function getAssetPackageName(): ?string
     {
-        return [
-            SkeletonCommand::class,
-        ];
+        return 'beranidigital/berani-common-filament-plugin';
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function getScriptData(): array
+    {
+        return [];
     }
 
     /**
@@ -132,23 +149,5 @@ class SkeletonServiceProvider extends PackageServiceProvider
     protected function getRoutes(): array
     {
         return [];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    protected function getScriptData(): array
-    {
-        return [];
-    }
-
-    /**
-     * @return array<string>
-     */
-    protected function getMigrations(): array
-    {
-        return [
-            'create_skeleton_table',
-        ];
     }
 }
